@@ -4,10 +4,10 @@ This repository contains R scripts used for single cell RNAseq analyses as descr
 
 Corresponding raw data files can be found in GEO (GSE250173).
 
-Script_D19_all4subtypes_Fig.1.R - Figure 1 and Figure Supplement 2
+Script_D19_all4subtypes_Fig.1.R - Figure 1 C, D and Figure Supplement 3, Figure 2 E, F, Figure Supplement 4 E, F
 
-Script_secclustAVCMD19.R - Figure Supplement 3
+Script_secclustAVCMD19.R - Figure 1 E-H
 
-Script_convertgenenames.R and  Script_integration_invivo_invitro.R - Figure 2 and Figure Supplement 4
+Script_convertgenenames.R and  Script_integration_invivo_invitro.R - Figure 2 A-C and Figure Supplement 4 A, B
 
 All input data (filtered data matrices) will be available upon request.
