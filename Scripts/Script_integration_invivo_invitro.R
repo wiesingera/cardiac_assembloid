@@ -7,15 +7,16 @@ library(plyr)
 library(ggplot2)
 
 #import datasets (Hill et al., 2019; De Soysa et al., 2019) which were additionally annotated with CellType and timepoint
-setwd("L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/E9.25")
+setwd("/path/to/directory/AVC_invivo/allCM/E9.25")
 E9.25<-readRDS("E9.25_annotated_timepoint_CellType.rds")
-setwd("L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/E10.5")
+setwd("/path/to/directory/AVC_invivo/allCM/E10.5")
 E10.5<-readRDS("E10.5_annotated_timepoint_CellType.rds")
-setwd("L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/E13.5")
+setwd("/path/to/directory/AVC_invivo/allCM/E13.5")
 E13.5<-readRDS("E13.5_annotated_timepoint_CellType.rds")
 
+#import hiPSC-AVCM dataset with converted gene names
 setwd("L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/analysis/mouse_Orthologs")
-hAVCM<-readRDS("data_for_projection.rds") #this dataset was generated as described in "Script_convertgenenames.R"
+hAVCM<-readRDS("hiPSC_mouseOrthologue_GeneNames.rds") #this dataset was generated as described in "Script_convertgenenames.R"
 
 
 hAVCM@meta.data$timepoint<- "hiPSC"
@@ -89,6 +90,12 @@ DefaultAssay(data.integrated) <- "RNA"
 data <- NormalizeData(data.integrated, verbose = FALSE)
 data <- ScaleData(data, verbose = FALSE)
 
+#import hiPSC-AVCMs with mouse Orthologue genes separately to be able to annotate hiPSC-AVCMs in dataset
+setwd("L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/analysis/mouse_Orthologs")
+hAVCM<-readRDS("hiPSC_mouseOrthologue_GeneNames.rds")
+data@meta.data[rownames(hAVCM@meta.data), "AVC"] <- hAVCM@meta.data$seurat_clusters
+
+
 #annotate clusters identified in hiPSC-AVCMs in entire dataset
 data@meta.data[rownames(hAVCM@meta.data), "AVC"] <- hAVCM@meta.data$seurat_clusters
 
@@ -97,51 +104,13 @@ DimPlot(data, group.by = "CellType", label = TRUE, repel = TRUE)
 
 FeaturePlot(data, c("Tnnt2", "Actn2"))
 Idents(data)<-"seurat_clusters"
-subset<-subset(data, idents = c("8", "17", "18", "19", "20"), invert=TRUE)
+subset<-subset(data, idents = c("5", "8","13", "14", "15", "16", "17", "18", "19", "20"), invert=TRUE)
 DimPlot(subset, label = TRUE, repel = TRUE)
 
 all.markers <- FindAllMarkers(object = subset, only.pos = TRUE, min.pct = 0.25,  thresh.use = 0.25)
 top10 <- all.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
 library(RColorBrewer)
 DoHeatmap(object = subset, features  = top10$gene, label = T) + scale_fill_gradientn(colors =rev(brewer.pal(n = 11, name = "RdBu")))
-
-#remove more unwanted clusters
-subset<-subset(subset, idents = c("13", "14", "15", "16"), invert=TRUE)
-DimPlot(subset, label = TRUE, repel = TRUE)
-
-all.markers <- FindAllMarkers(object = subset, only.pos = TRUE, min.pct = 0.25,  thresh.use = 0.25)
-top10 <- all.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
-library(RColorBrewer)
-DoHeatmap(object = subset, features  = top10$gene, label = T) + scale_fill_gradientn(colors =rev(brewer.pal(n = 11, name = "RdBu")))
-
-
-#identify AVC clusters
-Idents(subset)<-"timepoint"
-hiPSC <- WhichCells(subset, idents = c("hiPSC"))
-DimPlot(subset, label=T, cells.highlight= hiPSC)
-
-Idents(subset)<-"AVC"
-AVC_E10.5 <- WhichCells(subset, idents = "11")
-AVC_13.5 <- WhichCells(subset, idents = "9")
-AVC_E9.25 <- WhichCells(subset, idents = c("8"))
-AVC_3 <- WhichCells(subset, idents = c("3"))
-AVC_4 <- WhichCells(subset, idents = c("4"))
-
-DimPlot(subset, label=T, cells.highlight= AVC_E10.5)
-DimPlot(subset, label=T, cells.highlight= AVC_13.5)
-DimPlot(subset, label=T, cells.highlight= AVC_E9.25)
-DimPlot(subset, label=T, cells.highlight= AVC_3)
-DimPlot(subset, label=T, cells.highlight= AVC_4)
-
-#remove non-CM from hiPSC dataset
-
-subset<-subset(subset, cells= AVC_3, invert=TRUE)
-subset<-subset(subset, cells= AVC_4, invert=TRUE)
-
-##cluster 5 appears as a smooth muscle cell cluster and will be removed
-Idents(subset)<- "seurat_clusters"
-subset<-subset(subset, idents="5", invert=TRUE)
-DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE)
 
 #annotate clusters
 current.cluster.ids <- c(0,1,2,3,4,6,7,9,10,11,12)
@@ -153,14 +122,15 @@ subset@active.ident <- factor(x = subset@active.ident, levels = my_levels)
 
 DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE)
 
-#get DE lists
+
+#get DE lists (Supplement Table 3)
 #AVCM
 markers_AVCM <- FindMarkers(subset, ident.1 = "AVCM", ident.2 = NULL , only.pos = TRUE) 
 markers_AVCM[
   with(markers_AVCM, order(avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_AVCM, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/integration/DElist_annotation/markers_AVCM.csv", row.names = TRUE)
+write.csv(markers_AVCM, file="/path/to/directory/markers_AVCM.csv", row.names = TRUE)
 
 #SANCM
 markers_SV_SANCM <- FindMarkers(subset, ident.1 = "SV_SANCM", ident.2 = NULL , only.pos = TRUE) 
@@ -168,7 +138,7 @@ markers_SV_SANCM[
   with(markers_SV_SANCM, order(avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_SV_SANCM, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/integration/DElist_annotation/markers_SV_SANCM.csv", row.names = TRUE)
+write.csv(markers_SV_SANCM, file="/path/to/directory/markers_SV_SANCM.csv", row.names = TRUE)
 
 #ACM
 markers_ACM <- FindMarkers(subset, ident.1 = "ACM", ident.2 = NULL , only.pos = TRUE) 
@@ -176,7 +146,7 @@ markers_ACM[
   with(markers_ACM, order(avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_ACM, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/integration/DElist_annotation/markers_ACM.csv", row.names = TRUE)
+write.csv(markers_ACM, file="/path/to/directory/markers_ACM.csv", row.names = TRUE)
 
 #VCM
 markers_VCM <- FindMarkers(subset, ident.1 = "VCM", ident.2 = NULL , only.pos = TRUE) 
@@ -184,7 +154,7 @@ markers_VCM[
   with(markers_VCM, order(avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_VCM, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/integration/DElist_annotation/markers_VCM.csv", row.names = TRUE)
+write.csv(markers_VCM, file="/path/to/directory/markers_VCM.csv", row.names = TRUE)
 
 #OFT
 markers_OFT <- FindMarkers(subset, ident.1 = "OFT", ident.2 = NULL , only.pos = TRUE) 
@@ -192,20 +162,20 @@ markers_OFT[
   with(markers_OFT, order(avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_OFT, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/AVNCMs/AVC_invivo/allCM/integration/DElist_annotation/markers_OFT.csv", row.names = TRUE)
+write.csv(markers_OFT, file="/path/to/directory/markers_OFT.csv", row.names = TRUE)
 
 
 
 #figures for paper
-#Fig. 2a
+#Fig. 2A
 cols=c( "#abd9e9", "#d7191c","#fdae61", "#2c7bb6", "#dfc27d")
 DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE, cols = cols, pt.size = 0.7)
 
-#Fig. 2b
+#Fig. 2B
 #AVCM cluster
 FeaturePlot(subset, c("Tbx2", "Tbx3", "Bmp2", "Hcn4"), cols= c("lightgrey", "#e66101"), pt.size = 0.7) 
 
-#Fig. S4b
+#Fig. S4B
 #SV_SANCM cluster
 FeaturePlot(subset, c("Shox2", "Vsnl1", "Tbx18"), cols= c("lightgrey", "#2b8cbe"), pt.size = 0.7) 
 
@@ -218,7 +188,10 @@ FeaturePlot(subset, c("Myl2", "Myh7","Hey2"), cols= c("lightgrey","#2c7bb6"), pt
 #OFT cluster
 FeaturePlot(subset, c("Rspo3", "Isl1", "Bmp4"), cols= c("lightgrey","#fe9929"), pt.size = 0.7) 
 
-#Fig. 2c
+#Fig. 2C
+#identify AVC clusters
+Idents(data)<-"timepoint"
+hiPSC <- WhichCells(data, idents = c("hiPSC"))
 DimPlot(subset, label=T, repel=TRUE, cells.highlight= hiPSC, pt.size = 0.9)
 
 #extract cells
@@ -229,24 +202,11 @@ OFT <- WhichCells(subset, idents = "6")
 ACM <- WhichCells(subset, idents = c("3", "11"))
 SV_SANCM <- WhichCells(subset, idents = c("7"))
 
-#check whether correct cells were selected
-DimPlot(subset, label=T, cells.highlight= VCM)
-DimPlot(subset, label=T, cells.highlight= OFT)
-DimPlot(subset, label=T, cells.highlight= ACM)
-DimPlot(subset, label=T, cells.highlight= SV_SANCM)
-DimPlot(subset, label=T, cells.highlight= AVC)
-
 VCM<-subset(subset, idents= c("0", "1", "2", "9", "10", "12"))
 OFT<-subset(subset, idents= "6")
 ACM<-subset(subset, idents= c("3", "11"))
 SV_SANCM<-subset(subset, idents= "7")
 AVC<-subset(subset, idents= "4")
-
-DimPlot(VCM, label = TRUE, repel = TRUE)
-DimPlot(ACM, label = TRUE, repel = TRUE)
-DimPlot(OFT, label = TRUE, repel = TRUE)
-DimPlot(SV_SANCM, label = TRUE, repel = TRUE)
-DimPlot(AVC, label = TRUE, repel = TRUE)
 
 VCM@meta.data$annotation<-"VCM"
 OFT@meta.data$annotation<-"OFT"
@@ -262,31 +222,18 @@ subset@meta.data[rownames(OFT@meta.data), "annotation"] <- OFT@meta.data$annotat
 subset@meta.data[rownames(ACM@meta.data), "annotation"] <- ACM@meta.data$annotation
 subset@meta.data[rownames(SV_SANCM@meta.data), "annotation"] <- SV_SANCM@meta.data$annotation
 
-head(subset[[]])
-tail(subset[[]])
-
 Idents(subset)<-"annotation"
 
-# Fig. S2a
+# Heatmap Fig. S4A
 all.markers <- FindAllMarkers(object = subset, only.pos = TRUE, min.pct = 0.25,  thresh.use = 0.25)
 top10 <- all.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
 DoHeatmap(object = subset, features  = top10$gene, label = T) + scale_fill_gradientn(colors =rev(brewer.pal(n = 11, name = "RdBu")))
 
 
-# Fig. 2f
-Idents(subset)<- "CellType"
-subset_invivo <- subset(subset, idents="hiPSC", invert=TRUE)
-
-Idents(subset_invivo)<- "annotation"
-features = c("Syne2", "Msi2",	"Rcsd1",	"Ltbp1",	"Bambi",	"Palld",	"Mef2a",	"Unc5b",	"Mical2",
-             "Atp1a1",	"Ppp1r14c",	"Atp1b1",	"Fbn2",	"Nebl",	"Rspo3",	"Cpne5",	"Msx2",	"Bmp2",	"Tbx3",	"Tbx2")
-
-DotPlot(subset_invivo, features = features, cols = c("lightgrey", "darkorange")) + coord_flip()
-
 #### SessionInfo ####
-writeVersions <- function(sessionDir="L:/basic/Personal Archive/A/awiesinger/scripts and data for github/Documentation"){
+writeVersions <- function(sessionDir="/path/to/directory/Documentation"){
   write(paste0("Bioconductor version ", capture.output(tools:::.BioC_version_associated_with_R_version()),"\n"), 
-        paste0(sessionDir,"/sessionInfo.txt"))
+        paste0(sessionDir,"/sessionInfo_integration_invivo_invitro.txt"))
   write(capture.output(sessionInfo()), paste0(sessionDir,"/sessionInfo.txt"), append=TRUE)
 }
 
