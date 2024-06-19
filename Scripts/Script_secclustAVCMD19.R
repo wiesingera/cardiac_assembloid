@@ -61,26 +61,23 @@ DefaultAssay(data.integrated) <- "RNA"
 data.integrated <- NormalizeData(data.integrated, verbose = FALSE)
 data.integrated <- ScaleData(data.integrated, verbose = FALSE)
 
-#UMAP Fig.S3a
+#UMAP Fig.1E
 cols<-c("#9C00E7", "#ce1256", "#8c96c6", "#fbb4b9")
 DimPlot(data.integrated, reduction = "umap", label = TRUE, repel = TRUE, cols = cols, pt.size = 1.5)
 
-#ViolinPlots Fig. S3b
-VlnPlot(object = data.integrated, features =c("TNNT2", "ACTN2", "NKX2-5", "TBX2", "TBX3", "BMP2", "NPPA", "HEY1", 
-                                   "MYL7"), cols=cols)
+#FeaturePlots Fig. 1F
+FeaturePlot(data.integrated, features = c("TNNT2", "ACTN2"), cols = rev(brewer.pal(n = 11, name = "RdGy")))
 
-#create Heatmap Fig. S3c
+#ViolinPlots Fig. 1G
+VlnPlot(object = data.integrated, features =c("TNNT2", "TBX2", "TBX3", "BMP2", "NPPA", "HEY1"), cols=cols)
+
+#create Heatmap Fig. 1H
 all.markers <- FindAllMarkers(object = data.integrated, only.pos = TRUE, min.pct = 0.25,  thresh.use = 0.25)
 top10 <- all.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
 DoHeatmap(object = data.integrated, features  = top10$gene, label = TRUE, group.colors = cols)+ scale_fill_gradientn(colors =rev(brewer.pal(n = 11, name = "RdBu")))
 
-#ViolinPlots Fig. S3d
-VlnPlot(object = data.integrated, features =c("TBX18", "WT1", "BNC1"), cols=cols)
 
-VlnPlot(object = AVCM, features =c("TBX2", "BMP2", "MSX2", "MYL7"), cols=cols, ncol= 2)
-
-
-#annotate AVCM in D19 dataset as shown in Fig. S3e
+#annotate AVCM in D19 dataset as shown in Fig. S4F
 #import dataset containing all 4 subtypes and annotate clustering identified in this analysis
 #D19<-readRDS("subset.rds")
 D19@meta.data[rownames(data.integrated@meta.data), "AVCM.clusters"] <- data.integrated@meta.data$seurat_clusters
@@ -88,14 +85,14 @@ D19@meta.data[rownames(data.integrated@meta.data), "AVCM.clusters"] <- data.inte
 DimPlot(D19, group.by = "AVCM.clusters", label = TRUE, repel = TRUE, cols = cols, pt.size = 1)
 
 
-#obtain DE list for all 4 clusters
+#obtain DE list for all 4 clusters (Supplement Table 2)
 #markers 0
 markers_0 <- FindMarkers(AVCM, ident.1 = "0", ident.2 = NULL, only.pos = TRUE) 
 markers_0[
   with(markers_0, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_0, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list_AVCMD19/markers_0.csv", row.names = TRUE)
+write.csv(markers_0, file="/path/to/directory/DE_list_AVCMD19/markers_0.csv", row.names = TRUE)
 
 ## markers 1
 markers_1 <- FindMarkers(AVCM, ident.1 = "1", ident.2 = NULL, only.pos = TRUE) 
@@ -103,7 +100,7 @@ markers_1[
   with(markers_1, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_1, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list_AVCMD19/markers_1.csv", row.names = TRUE)
+write.csv(markers_1, file="/path/to/directory/DE_list_AVCMD19/markers_1.csv", row.names = TRUE)
 
 
 #marker 2
@@ -112,7 +109,7 @@ markers_2[
   with(markers_2, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_2, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list_AVCMD19/markers_2.csv", row.names = TRUE)
+write.csv(markers_2, file="/path/to/directory/DE_list_AVCMD19/markers_2.csv", row.names = TRUE)
 
 
 #markers 3
@@ -121,7 +118,8 @@ markers_3[
   with(markers_3, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_3, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list_AVCMD19/markers_3.csv", row.names = TRUE)
+write.csv(markers_3, file="/path/to/directory/DE_list_AVCMD19/markers_3.csv", row.names = TRUE)
+
 
 #### SessionInfo ####
 writeVersions <- function(sessionDir="/path/to/directory/Documentation"){
