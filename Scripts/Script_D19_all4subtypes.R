@@ -7,6 +7,7 @@ library(fossil)
 library(dplyr)
 library(plyr)
 library(RColorBrewer)
+library(babelgene)
 
 setwd("/path/to/directory/")
 
@@ -98,18 +99,18 @@ subset <- subset(data.integrated, ident = c("0", "1", "2", "3", "4", "5", "6", "
 DimPlot(subset, group.by = "orig.ident", label = TRUE, repel = TRUE)
 DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE)
 
-#Fig. 1h 
+#Fig. 1C 
 cols<-c("#F77DD9", "#33AFF2", "#9C00E7", "#FFAF6F", "#31a354", "#8856a7", "#fec44f", "#7fcdbb", "#43a2ca", "#c994c7", "#de2d26", "#dd1c77")
 DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE, cols = cols, pt.size = 0.7)
 
-#export DE genes for each cluster
+#export DE genes for each cluster (Supplement Table 1)
 ##markers 0
 markers_0 <- FindMarkers(subset, ident.1 = "0", ident.2 = NULL, only.pos = TRUE) 
 markers_0[
   with(markers_0, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_0, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_0.csv", row.names = TRUE)
+write.csv(markers_0, file="/path/to/directory/DE_list/markers_0.csv", row.names = TRUE)
 
 
 ## markers 1
@@ -118,7 +119,7 @@ markers_1[
   with(markers_1, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_1, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_1.csv", row.names = TRUE)
+write.csv(markers_1, file="/path/to/directory/DE_list/markers_1.csv", row.names = TRUE)
 
 
 #marker 2
@@ -127,7 +128,7 @@ markers_2[
   with(markers_2, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_2, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_2.csv", row.names = TRUE)
+write.csv(markers_2, file="/path/to/directory/DE_list/markers_2.csv", row.names = TRUE)
 
 
 #markers 3
@@ -136,7 +137,7 @@ markers_3[
   with(markers_3, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_3, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_3.csv", row.names = TRUE)
+write.csv(markers_3, file="/path/to/directory/DE_list/markers_3.csv", row.names = TRUE)
 
 
 #markers 4
@@ -145,7 +146,7 @@ markers_4[
   with(markers_4, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_4, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_4.csv", row.names = TRUE)
+write.csv(markers_4, file="/path/to/directory/DE_list/markers_4.csv", row.names = TRUE)
 
 
 #markers 5
@@ -154,7 +155,7 @@ markers_5[
   with(markers_5, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_5, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_5.csv", row.names = TRUE)
+write.csv(markers_5, file="/path/to/directory/DE_list/markers_5.csv", row.names = TRUE)
 
 
 #markers 6
@@ -163,7 +164,7 @@ markers_6[
   with(markers_6, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_6, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_6.csv", row.names = TRUE)
+write.csv(markers_6, file="/path/to/directory/DE_list/markers_6.csv", row.names = TRUE)
 
 
 #markers 7
@@ -172,7 +173,7 @@ markers_7[
   with(markers_7, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_7, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_7.csv", row.names = TRUE)
+write.csv(markers_7, file="/path/to/directory/DE_list/markers_7.csv", row.names = TRUE)
 
 
 #markers 9
@@ -181,7 +182,7 @@ markers_9[
   with(markers_9, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_9, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_9.csv", row.names = TRUE)
+write.csv(markers_9, file="/path/to/directory/DE_list/markers_9.csv", row.names = TRUE)
 
 
 #cluster 10 
@@ -190,7 +191,7 @@ markers_10[
   with(markers_10, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_10, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_10.csv", row.names = TRUE)
+write.csv(markers_10, file="/path/to/directory/DE_list/markers_10.csv", row.names = TRUE)
 
 
 #cluster 11 
@@ -199,7 +200,7 @@ markers_11[
   with(markers_11, order( avg_log2FC, decreasing = TRUE)),
 ]
 
-write.csv(markers_11, file="L:/basic/Personal Archive/A/awiesinger/scRNAseq_analyses/220112_D19_AVCM_SANCM_ACM_VCM/DE_list/markers_11.csv", row.names = TRUE)
+write.csv(markers_11, file="/path/to/directory/DE_list/markers_11.csv", row.names = TRUE)
 
 
 #cluster 12 
@@ -211,33 +212,109 @@ markers_12[
 
 ##extract CMs only
 #according to TNNT2 and ACTN2 expresseion, cluster 5, 7, 9, 10 and 12 are non-CMs
-#Fig. S2a
+#Fig. 1D
 FeaturePlot(subset, features = c("TNNT2", "ACTN2"), cols = rev(brewer.pal(n = 11, name = "RdGy")))
 VlnPlot(subset, features=(c("TNNT2", "ACTN2")), cols= cols)
 
 #subset for CMs only
 subset<-subset(subset, idents = c("0", "1", "2", "3", "4", "6"))
 
-#Fig. 1i
+#Fig. S3A
 cols<-c("#F77DD9", "#33AFF2", "#9C00E7", "#FFAF6F", "#31a354", "#fec44f")
 DimPlot(subset, reduction = "umap", label = TRUE, repel = TRUE, cols = cols, pt.size = 0.9)
 
-#Fig. 1j
-subset2<- subset
-Idents(subset2)<-"orig.ident"
-AVCM<-WhichCells(subset2, idents = c("D19AVCM_1", "D19AVCM_2"))
-DimPlot(subset2, label = TRUE, repel = TRUE, cells.highlight = AVCM)
+#Fig. S3B
+FeaturePlot(subset, features = c("TNNT2", "ACTN2"), cols = rev(brewer.pal(n = 11, name = "RdGy")))
 
-#Fig. 1k and S2b-f
-FeaturePlot(subset, features = c("TBX2", "TBX3", "RSPO3")) & scale_colour_gradient(low = "lightgrey", high = "purple")
-FeaturePlot(subset, features = c("NPPA", "MB", "ADM", "NR2F2")) & scale_colour_gradient(low = "lightgrey", high = "maroon2")
-FeaturePlot(subset, features = c("SHOX2", "TBX18", "ISL1", "VSNL1"))& scale_colour_gradient(low = "lightgrey", high = "steelblue3")
-FeaturePlot(subset, features = c("MYL2", "MYH7", "HOPX", "HEY2")) & scale_colour_gradient(low = "lightgrey", high = "orangered2")
+#Fig. S3C-H
+FeaturePlot(subset, features = c("TBX2", "TBX3", "MSX2", "RSPO3")) & scale_colour_gradient(low = "lightgrey", high = "purple")
+FeaturePlot(subset, features = c("SHOX2", "ISL1"))& scale_colour_gradient(low = "lightgrey", high = "steelblue3")
 FeaturePlot(subset, features = c("TCF21", "COL3A1")) & scale_colour_gradient(low = "lightgrey", high = "darkgreen")
+FeaturePlot(subset, features = c("NPPA", "NR2F2")) & scale_colour_gradient(low = "lightgrey", high = "maroon2")
+FeaturePlot(subset, features = c("MYL2", "HOPX")) & scale_colour_gradient(low = "lightgrey", high = "orangered2")
 FeaturePlot(subset, features = c("HAPLN1", "PITX2")) & scale_colour_gradient(low = "lightgrey", high = "orange")
 
+##########################################################3
+##### Module Scores Fig.2
+
+#Get top 50 genes enriched in mouse AVC cells Fig. 2E
+#marker_AVCM retrieval is described in script: integration_invivo_invitro.R
+top50 <- markers_AVCM %>% top_n(n = 50, wt = avg_log2FC)
+
+head(top50)
+
+##convert to human orthologues
+library(babelgene)
+
+genes<-rownames(top50)
+orthologs <-orthologs(genes = genes, species = "mouse", human = FALSE)
+TOP50<-orthologs$human_symbol
+
+#add module score of TOP 50 mouse AVC genes to our dataset
+subset <- AddModuleScore(subset,
+                         features = list(TOP50),
+                         name="mouseAVC_enriched")
+# Plot scores
+FeaturePlot(subset,
+            features = "mouseAVC_enriched1", label = TRUE, repel = TRUE) +
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "RdBu")))
+
+
+#Get top 50 genes enriched in human fetal AVN (Farah 2024) Fig. 2F
+AVN_enriched <-c("RSPO3",	"BMP2",	"GNG11",	"IGFBP5",	"TBX3",	"MSX2",	"MB",	"HAMP",	"FHL2",	"ACTA2",
+                 "PRSS35",	"SFRP1",	"ID2",	"ID3",	"CXCL12",	"DOK4",	"TSC22D1",	"CRHBP",	"SPEG",	"TSTD1",
+                 "RRAD",	"EMC10",	"MYH6",	"ID1",	"COL18A1",	"EPHA4",	"VCAM1",	"LMO4",	"BAMBI",	"IGFBP6",
+                 "PRSS23",	"CPNE5",	"TIMP3",	"SLC2A3",	"FAM189A2",	"CKB",	"CRABP2",	"ADAMTS19",	"PKIG",	"JUNB",
+                 "NME4",	"ADM",	"ID4",	"SAA1",	"MARCKS",	"ZFP36L1",	"JUN",	"ITGA10",	"SMAD6",	"ATP1A1")
+#add module score
+subset <- AddModuleScore(subset,
+                         features = list(AVN_enriched),
+                         name="hAVNfetal_enriched")
+
+# Plot scores
+FeaturePlot(subset,
+            features = "hAVNfetal_enriched1", label = TRUE, repel = TRUE) +
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "RdBu")))
+
+#Get top 50 genes enriched in human AVN (Kanemaru 2023) Fig. 2F
+AVN_enriched <-c("AL358335.2",	"RSPO3",	"SLITRK2",	"PTGER3",	"BMP2",	"SEMA3D",	"MOXD1",	"PDZRN4",	"MYL2",	"GNG11",
+                 "HMGCLL1",	"GPR158",	"KCND2",	"NPNT",	"KEL",	"DPYSL5",	"ARHGAP6",	"AL356234.2",	"MPPED2",	"SPOCK3",
+                 "ACTA1",	"MGARP",	"MSX2",	"GADL1",	"AC026765.3",	"CGNL1",	"PDE1A",	"KDR",	"NLGN1",	"LRRC4C",
+                 "PLXNA2",	"ATP1B4",	"CRNDE",	"TBX3",	"SNAP91",	"APOA1",	"ANO4",	"KLHL4",	"LRFN5",	"SEMA3E",
+                 "LINC02284",	"NEGR1",	"MMP23B",	"EDIL3",	"TNFRSF11B",	"MAP2",	"LRRC38",	"ADAMTS5",	"UBASH3B",	"PCDH20")
+#add module score
+subset <- AddModuleScore(subset,
+                         features = list(AVN_enriched),
+                         name="AVN_enriched")
+
+#Plot scores
+FeaturePlot(subset,
+            features = "AVN_enriched1", label = TRUE, repel = TRUE) +
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "RdBu")))
+
+
+#Get top 50 genes enriched in PSC-AVC cells (Schmidt 2023) Fig. S4E
+#Schmidt data can be retrieved from the following link: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE239890
+
+markers_AVC <- FindMarkers(Schmidtdata_seurat_object, ident.1 = "AVC", ident.2 = NULL, only.pos = TRUE) 
+markers_AVC[
+  with(markers_AVC, order( avg_log2FC, decreasing = TRUE)),
+]
+top50 <- markers_SchmidtAVCM %>% top_n(n = 50, wt = avg_log2FC)
+
+head(top50)
+
+#add module score of TOP 50 Schmidt AVC genes to our dataset
+subset <- AddModuleScore(subset,
+                         features = list(rownames(top50)),
+                         name="SchmidtAVC_enriched")
+# Plot scores
+FeaturePlot(subset,
+            features = "SchmidtAVC_enriched1", label = TRUE, repel = TRUE) +
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "RdBu")))
+
 #### SessionInfo ####
-writeVersions <- function(sessionDir="H:/Data/02Manuscript/scripts and data for github/Documentation"){
+writeVersions <- function(sessionDir="/path/to/directory/Documentation"){
   write(paste0("Bioconductor version ", capture.output(tools:::.BioC_version_associated_with_R_version()),"\n"), 
         paste0(sessionDir,"/sessionInfo.txt"))
   write(capture.output(sessionInfo()), paste0(sessionDir,"/sessionInfo.txt"), append=TRUE)
